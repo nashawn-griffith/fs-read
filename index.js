@@ -1,30 +1,9 @@
-const fs = require('fs');
 const express = require('express');
-const fs_write = require('util').promisify(fs.writeFile);
+const fs = require('fs');
 const fs_read = require('util').promisify(fs.readFile);
-
 const app = express();
 
-app.get('/monitor', (req, res) => {
-	return res.send('Write server is OK');
-});
-
-app.get('/write/:text', (req, res) => {
-	console.log('Write is starting');
-	const {text} = req.params;
-	fs_write('/tmp/message.txt', text)
-		.then(result => {
-			console.log('Written to file');
-			return res.send('data written');
-		})
-		.catch(err => {
-			console.log(err);
-			return res.send(err);
-		});
-});
-
 app.get('/read', (req, res) => {
-	console.log('Reading from original');
 	fs_read('/tmp/message.txt')
 		.then(data => {
 			console.log('Data read: ', data.toString());
@@ -37,6 +16,10 @@ app.get('/read', (req, res) => {
 		});
 });
 
-app.listen(5000, () => {
-	console.log('Write server running');
+app.get('/monitor', (req, res) => {
+	return res.status(200).send('Ok');
+});
+
+app.listen(5001, () => {
+	console.log('Read Server running on port 5001');
 });
